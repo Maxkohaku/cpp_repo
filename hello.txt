@@ -12,5 +12,5 @@ hello ynh! hello git!
 hello bmg! hello git!
 hello ynh! hello git!
 hello bmg! hello git!
-hello ynh! hello git!
+hello ynh! hello git! master test
 hello bmg! hello git!
