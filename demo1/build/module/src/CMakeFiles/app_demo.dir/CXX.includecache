@@ -1,0 +1,32 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../module/logger/logger.h
+iostream
+-
+fstream
+-
+iomanip
+-
+chrono
+-
+sstream
+-
+string
+-
+mutex
+-
+
+/home/ynh/git_ws/gitdemo/demo1/module/src/main.cpp
+chrono
+-
+thread
+-
+logger.h
+/home/ynh/git_ws/gitdemo/demo1/module/src/logger.h
+

@@ -1,0 +1,1 @@
+/usr/bin/c++ -fPIC   -shared -Wl,-soname,liblogger_lib.so -o ../../../lib/liblogger_lib.so CMakeFiles/logger_lib.dir/logger.cpp.o 

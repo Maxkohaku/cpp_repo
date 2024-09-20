@@ -1,0 +1,11 @@
+{
+    "ip":"192.168.200.128",
+    "user":"root",
+    "passwd":"@ynh123",
+    "dbBase":"mydatabase",
+    "port":"3306",
+    "minSize":"100",
+    "maxSize":"1024",
+    "timeout":"5000",
+    "maxIdleTime":"1000"
+}

@@ -1,0 +1,2 @@
+/usr/bin/ar qc ../../../lib/liblogger_lib_static.a  CMakeFiles/logger_lib_static.dir/logger.cpp.o
+/usr/bin/ranlib ../../../lib/liblogger_lib_static.a
