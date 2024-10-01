@@ -5,7 +5,7 @@ using namespace std;
 
 int main()
 {
-    Person p("颜年华", "男", 27);
+    Person p("ynh", "man", 27);
     Person p1;
     p1 = (move(p));
     cout << "p:--------------" << endl;
