@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/bin/env sh
 current_dir="$(dirname "$(realpath "$0")")"
 build_dir=${current_dir}/build
 output_dir=${current_dir}/output
@@ -14,19 +14,19 @@ compile()
     make
     if [ $? != 0 ]; then
         cd -
-        echo -e "编译失败!\n"
+        echo "编译失败!\n"
         exit -1
     else
         cd -
-        echo -e "编译成功!\n--------------------"
+        echo "编译成功!\n--------------------"
     fi
 }
 run()
 {
-    echo -e "本次运行的程序md5sum信息如下:"
+    echo "本次运行的程序md5sum信息如下:"
     md5sum $app_file
     ${app_file}
-    echo -e "--------------------\n运行结束!"
+    echo "--------------------\n运行结束!"
 }
 main()
 {
