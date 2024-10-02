@@ -54,11 +54,5 @@ int main(int argc, char * argv[])
         this_thread::sleep_for(chrono::milliseconds(1000));
     }
     thread th(&EventHandler::trigger_event, &instance);
-    th.detach();
-    
-    while (true)
-    {
-    }
-    
-    return 0;
+    th.join();
 }

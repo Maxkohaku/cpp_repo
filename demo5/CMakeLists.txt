@@ -6,7 +6,7 @@ set(APP_NAME test)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/output)
 file(GLOB_RECURSE SOURCES_FILES ${CMAKE_CURRENT_SOURCE_DIR}/module/**.cpp)
 file(GLOB_RECURSE HEAD_FILES ${CMAKE_CURRENT_SOURCE_DIR}/module/**.h)
-# 提取头文件所在的目录
+# 提取头文件所在的目录lsls
 set(HEADER_DIRS "")
 foreach(HEADER_FILE ${HEAD_FILES})
     get_filename_component(HEADER_DIR ${HEADER_FILE} DIRECTORY)
