@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 3.0.0)
+project(app)
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(APP_NAME test)
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/output)
+file(GLOB_RECURSE SOURCES_FILES ${CMAKE_CURRENT_SOURCE_DIR}/module/src/*.cpp)
+add_executable(${APP_NAME} ${SOURCES_FILES})

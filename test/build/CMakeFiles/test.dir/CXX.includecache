@@ -1,0 +1,18 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/ynh/git_ws/cpp_repo/test/module/src/main.cpp
+iostream
+-
+string
+-
+chrono
+-
+thread
+-
+
