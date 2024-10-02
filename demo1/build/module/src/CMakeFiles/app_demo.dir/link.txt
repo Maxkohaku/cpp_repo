@@ -1,1 +1,0 @@
-/usr/bin/c++    -rdynamic CMakeFiles/app_demo.dir/main.cpp.o  -o ../../../bin/app_demo   -L/home/ynh/git_ws/gitdemo/demo1/lib  -Wl,-rpath,/home/ynh/git_ws/gitdemo/demo1/lib ../../../lib/liblogger_lib.so 

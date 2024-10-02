@@ -1,1 +1,0 @@
-/usr/bin/c++    -rdynamic CMakeFiles/app.dir/module/src/main.cpp.o  -o ../output/app   -L/home/ynh/git_ws/gitdemo/demo3/module/Person/lib  -Wl,-rpath,/home/ynh/git_ws/gitdemo/demo3/module/Person/lib -lperson 

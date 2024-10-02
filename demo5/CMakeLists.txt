@@ -6,12 +6,15 @@ set(APP_NAME test)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/output)
 file(GLOB_RECURSE SOURCES_FILES ${CMAKE_CURRENT_SOURCE_DIR}/module/**.cpp)
 file(GLOB_RECURSE HEAD_FILES ${CMAKE_CURRENT_SOURCE_DIR}/module/**.h)
+# 提取头文件所在的目录
 set(HEADER_DIRS "")
 foreach(HEADER_FILE ${HEAD_FILES})
     get_filename_component(HEADER_DIR ${HEADER_FILE} DIRECTORY)
     list(APPEND HEADER_DIRS ${HEADER_DIR})
 endforeach()
+# 去重，避免相同的目录重复添加
 list(REMOVE_DUPLICATES HEADER_DIRS)
+# 添加头文件目录
 add_executable(${APP_NAME} ${SOURCES_FILES})
 target_include_directories(${APP_NAME} PRIVATE ${HEADER_DIRS})
 target_link_libraries(${APP_NAME} PRIVATE pthread)

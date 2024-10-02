@@ -1,1 +1,1 @@
-/usr/bin/c++    -rdynamic CMakeFiles/test.dir/module/src/main.cpp.o  -o ../output/test 
+/usr/bin/c++    -rdynamic CMakeFiles/test.dir/module/src/main.cpp.o  -o ../output/test  -lpthread 
