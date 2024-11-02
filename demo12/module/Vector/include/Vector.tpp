@@ -24,6 +24,34 @@ Vector<T>::~Vector()
 }
 
 template <typename T>
+T& Vector<T>::operator[](int pos) const
+{
+    #if DEBUG
+        cout << "call operator[]" << endl;
+    #endif
+    if(pos < 0 || pos >= m_size)
+    {
+        cout << "插入数据失败，输入是pos无效" << endl;
+        throw std::out_of_range("索引超出范围");
+    }
+    return m_vector[pos];
+}
+
+template <typename T>
+T&  Vector<T>::operator[](int pos)
+{
+    #if DEBUG
+        cout << "call operator[]" << endl;
+    #endif
+    if(pos < 0 || pos >= m_size)
+    {
+        cout << "插入数据失败，输入是pos无效" << endl;
+        throw std::out_of_range("索引超出范围");
+    }
+    return m_vector[pos];
+}
+
+template <typename T>
 void Vector<T>::expand(int size)
 {
     #if DEBUG
@@ -148,7 +176,7 @@ T Vector<T>::value(int pos)
 
 //获取数组元素数量
 template <typename T>
-int Vector<T>::size()
+int Vector<T>::size() const
 {
     #if DEBUG
         cout << "call size" << endl;

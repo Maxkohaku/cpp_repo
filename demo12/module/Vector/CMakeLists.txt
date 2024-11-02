@@ -4,6 +4,18 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(Vector_LIB_SHARED Vector)
 set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/output/lib)
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release)
+endif()
+
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    message(STATUS "Configuring for Debug")
+    set(CMAKE_CXX_FLAGS_DEBUG "-g")
+else()
+    message(STATUS "Configuring for Release")
+    set(CMAKE_CXX_FLAGS_RELEASE "-O3")
+endif()
+
 
 file(GLOB_RECURSE SOURCES_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/**.cpp)
 
@@ -23,3 +35,8 @@ message("HEADER_DIRS:" ${HEADER_DIRS})
 
 add_library(${Vector_LIB_SHARED} SHARED ${SOURCES_FILES})
 target_include_directories(${Vector_LIB_SHARED} PUBLIC ${HEADER_DIRS})
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    target_compile_definitions(${Vector_LIB_SHARED} PRIVATE DEBUG=false)
+else()
+    target_compile_definitions(${Vector_LIB_SHARED} PRIVATE DEBUG=true)
+endif()

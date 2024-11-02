@@ -10,6 +10,9 @@ class Vector
 public:
     Vector(int size = 8);
     ~Vector();
+    //重载[]
+    T& operator[](int pos) const;
+    T& operator[](int pos);
     //在尾部添加元素
     void append(T val);
     //在尾部删除元素
@@ -23,7 +26,7 @@ public:
     //获取某位置元素值
     T value(int pos);
     //获取数组元素数量
-    int size();
+    int size() const;
     //打印数组
     void show();
 private:
