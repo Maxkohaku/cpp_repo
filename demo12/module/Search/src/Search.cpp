@@ -1,6 +1,7 @@
 #include "Search.h"
 int binarySearchNorecursive(const Vector<int>& vec, int target)
 {
+    DEBUG_LOG("call binarySearchRecursive");
     int left = 0;
     int right = vec.size() - 1;
     while(left <= right)
@@ -25,9 +26,7 @@ int binarySearchNorecursive(const Vector<int>& vec, int target)
 
 int binarySearchRecursive(const Vector<int>& vec, int left, int right, int target)
 {
-    #if DEBUG
-        cout << "call binarySearchRecursive" << endl;
-    #endif
+    DEBUG_LOG("call binarySearchRecursive");
     int mid = (left + right) / 2;
     if( target == vec[mid])
     {

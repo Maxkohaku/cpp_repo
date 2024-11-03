@@ -1,24 +1,55 @@
-#ifndef _VECTOR_TPP_
-#define _VECTOR_TPP_
+#ifndef _VECTOR_HPP_
+#define _VECTOR_HPP_
 #include <iostream>
 #include <cstring>
 #include <cassert>
+#if DEBUG
+    #define DEBUG_LOG(msg) std::cout << msg << std::endl
+#else
+    #define DEBUG_LOG(msg)
+#endif
 using namespace std;
-
+template <typename T>
+class Vector
+{
+public:
+    Vector(int size = 8);
+    ~Vector();
+    //重载[]
+    T& operator[](int pos) const;
+    T& operator[](int pos);
+    //在尾部添加元素
+    void append(T val);
+    //在尾部删除元素
+    void popBack();
+    //在某位置插入元素
+    void insert(int pos, T val);
+    //删除某位置元素
+    void remove(int pos);
+    //查询元素位置
+    int find(T val); 
+    //获取某位置元素值
+    T value(int pos);
+    //获取数组元素数量
+    int size() const;
+    //打印数组
+    void show();
+private:
+    void expand(int size);
+    T* m_vector; //数组的起始地址
+    int m_capacity; //数组元素容量
+    int m_size; //数组元素数量
+};
 template <typename T>
 Vector<T>::Vector(int size):m_capacity(size), m_size(0), m_vector(new T[size]())
 { 
-    #if DEBUG
-        cout << "call Vector" << endl;
-    #endif
+    DEBUG_LOG("call Vector");
 }
 
 template <typename T>
 Vector<T>::~Vector()
 {
-    #if DEBUG
-        cout << "call ~Vector" << endl;
-    #endif
+   DEBUG_LOG("call ~Vector");
     delete [] m_vector;
     m_vector = nullptr;
 }
@@ -26,9 +57,7 @@ Vector<T>::~Vector()
 template <typename T>
 T& Vector<T>::operator[](int pos) const
 {
-    #if DEBUG
-        cout << "call operator[]" << endl;
-    #endif
+   DEBUG_LOG("call operator[] const");
     if(pos < 0 || pos >= m_size)
     {
         cout << "插入数据失败，输入是pos无效" << endl;
@@ -40,9 +69,7 @@ T& Vector<T>::operator[](int pos) const
 template <typename T>
 T&  Vector<T>::operator[](int pos)
 {
-    #if DEBUG
-        cout << "call operator[]" << endl;
-    #endif
+   DEBUG_LOG("call operator[]");
     if(pos < 0 || pos >= m_size)
     {
         cout << "插入数据失败，输入是pos无效" << endl;
@@ -54,9 +81,7 @@ T&  Vector<T>::operator[](int pos)
 template <typename T>
 void Vector<T>::expand(int size)
 {
-    #if DEBUG
-        cout << "call expand" << endl;
-    #endif
+   DEBUG_LOG("call expand");
     //申请一块新内存
     T* ptr = new T[size]();
     //将旧数据拷贝到新申请的内存中
@@ -71,9 +96,7 @@ void Vector<T>::expand(int size)
 template <typename T>
 void Vector<T>::append(T val)
 {
-    #if DEBUG
-        cout << "call append" << endl;
-    #endif
+   DEBUG_LOG("call append");
     if(m_size == m_capacity)
     {
         expand(m_capacity * 2);
@@ -85,12 +108,10 @@ void Vector<T>::append(T val)
 template <typename T>
 void Vector<T>::popBack()
 {
-    #if DEBUG
-        cout << "call popBack" << endl;
-    #endif
-    if(!m_size)
+   DEBUG_LOG("call popBack");
+    if(m_size > 0)
     {
-        m_size --; //尾部元素不可访问
+        --m_size; //尾部元素不可访问
     }
     return;
 }
@@ -99,9 +120,7 @@ void Vector<T>::popBack()
 template <typename T>
 void Vector<T>::insert(int pos, T val)
 {
-    #if DEBUG
-        cout << "call insert" << endl;
-    #endif
+   DEBUG_LOG("call insert");
     if(pos < 0 || pos > m_size)
     {
         cout << "插入数据失败，输入是pos无效" << endl;
@@ -124,9 +143,7 @@ void Vector<T>::insert(int pos, T val)
 template <typename T>
 void Vector<T>::remove(int pos)
 {
-    #if DEBUG
-        cout << "call remove" << endl;
-    #endif
+   DEBUG_LOG("call remove");
     if(pos < 0 || pos > m_size)
     {
         cout << "删除数据失败，输入是pos无效" << endl;
@@ -146,9 +163,7 @@ void Vector<T>::remove(int pos)
 template <typename T>
 int Vector<T>::find(T val)
 {
-    #if DEBUG
-        cout << "call find" << endl;
-    #endif
+   DEBUG_LOG("call find");
     for(int i = 0; i < m_size; ++i)
     {
         if(m_vector[i] == val)
@@ -163,9 +178,7 @@ int Vector<T>::find(T val)
 template <typename T>
 T Vector<T>::value(int pos)
 {
-    #if DEBUG
-        cout << "call value" << endl;
-    #endif
+   DEBUG_LOG("call value");
     assert(pos >= 0 && pos < m_size);
     if(m_size)
     {
@@ -178,9 +191,7 @@ T Vector<T>::value(int pos)
 template <typename T>
 int Vector<T>::size() const
 {
-    #if DEBUG
-        cout << "call size" << endl;
-    #endif
+   DEBUG_LOG("call size");
     return m_size;
 }
 
@@ -188,14 +199,11 @@ int Vector<T>::size() const
 template <typename T>
 void Vector<T>::show()
 {
-    #if DEBUG
-        cout << "call show" << endl;
-    #endif
+   DEBUG_LOG("call show");
     for(int i = 0; i < m_size; ++i)
     {
         cout << m_vector[i] << " ";
     }
-    cout << endl;
-    
+    cout << endl;  
 }
-#endif /*_VECTOR_TPP_*/
+#endif /*_VECTOR_HPP_*/
