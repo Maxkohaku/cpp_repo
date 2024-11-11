@@ -71,15 +71,16 @@ void test_sort()
     }
 
     auto pointCom = function<bool(const Point& a, const Point& b)>([](const Point& a, const Point& b){
-        return (a.m_x * a.m_y > b.m_x * b.m_y);
+        return (a.m_x * a.m_y >= b.m_x * b.m_y);
     });
 
     // bubbleSort(vec, pointCom);
     // selectionSort(vec, pointCom);
     //insertionSort(vec, pointCom);
     //shellSort(vec, pointCom);
-    quickSort(vec, 0, vec.size() - 1 ,pointCom);
-
+    // quickSort(vec, 0, vec.size() - 1 ,pointCom);
+    // mergeSort(vec, 0, vec.size() - 1 ,pointCom);
+    heapSort(vec, pointCom);
     cout << "排序后:" << endl;
     for(int i = 0; i < vec.size(); ++i)
     {

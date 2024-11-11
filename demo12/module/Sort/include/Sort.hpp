@@ -92,7 +92,7 @@ void shellSort(Vector<T>& vec, function<bool(const T& a, const T& b)> comFunc)
 }
 
 template <typename T>
-void quickSort(Vector<T>& vec, int left, int right, function<bool(const T& a, const T& b)> comFunc)
+void quickSort(Vector<T>& vec, int left, int right, function<bool(const T& a, const T& b)> comFuncAoverB)
 {
     if(left > right)
     {
@@ -101,9 +101,9 @@ void quickSort(Vector<T>& vec, int left, int right, function<bool(const T& a, co
     T pivot = vec[left];
     int begin = left;
     int end = right;
-    while (begin < end)
+    while(begin < end)
     {
-        while (begin < end && comFunc(vec[end], pivot))
+        while(begin < end && comFuncAoverB(vec[end],pivot))
         {
             end--;
         }
@@ -112,7 +112,7 @@ void quickSort(Vector<T>& vec, int left, int right, function<bool(const T& a, co
             vec[begin] = vec[end];
             begin++;
         }
-        while (begin < end && comFunc(pivot, vec[begin]))
+        while(begin < end && comFuncAoverB(pivot, vec[begin]))
         {
             begin++;
         }
@@ -123,8 +123,82 @@ void quickSort(Vector<T>& vec, int left, int right, function<bool(const T& a, co
         }
     }
     vec[begin] = pivot;
-    quickSort(vec, left, end - 1, comFunc);
-    quickSort(vec, end + 1, right, comFunc);
+    quickSort(vec, left, begin - 1, comFuncAoverB);
+    quickSort(vec, begin + 1, right, comFuncAoverB);
+}
+
+template <typename T>
+void mergeSort(Vector<T>& vec, int left, int right, function<bool(const T& a, const T& b)> comFuncAoverB)
+{
+    if(left >= right)
+    {
+        return;
+    }
+    int mid = (left + right) / 2;
+    mergeSort(vec, left, mid, comFuncAoverB);
+    mergeSort(vec, mid + 1, right, comFuncAoverB);
+    int leftHead = left;
+    int rightHead = mid + 1;
+    Vector<T> tmp;
+    while(leftHead <= mid && rightHead <= right)
+    {
+        if(comFuncAoverB(vec[rightHead], vec[leftHead]))
+        {
+            tmp.append(vec[leftHead++]);
+        }
+        else
+        {
+            tmp.append(vec[rightHead++]);
+        }
+    }
+    while(leftHead <= mid)
+    {
+        tmp.append(vec[leftHead++]);
+    }
+    while (rightHead <= right)
+    {
+        tmp.append(vec[rightHead++]);
+    }
+    for(int i = left, index = 0; i <= right; ++i)
+    {
+        vec[i] = tmp[index++];
+    }
+}
+
+template <typename T>
+void heapfy(Vector<T>& vec, int len, int parent, function<bool(const T& a, const T& b)> comFuncAoverB)
+{
+    int largest = parent;
+    int left = 2 * parent + 1;
+    int right = 2 * parent + 2;
+    if(left < len && comFuncAoverB(vec[left], vec[largest]))
+    {
+        largest = left;
+    }
+    if(right < len && comFuncAoverB(vec[right], vec[largest]))
+    {
+        largest = right;
+    }
+    if(largest != parent)
+    {
+        swap(vec[largest], vec[parent]);
+        heapfy(vec, len, largest, comFuncAoverB);
+    }
+}
+
+template <typename T>
+void heapSort(Vector<T>& vec, function<bool(const T& a, const T& b)> comFuncAoverB)
+{
+    int size = vec.size();
+    for(int i = size / 2 - 1; i >= 0; --i)
+    {
+        heapfy(vec, size, i, comFuncAoverB);
+    }
+    for(int i = size - 1; i > 0; --i)
+    {
+        swap(vec[i], vec[0]);
+        heapfy(vec, i, 0, comFuncAoverB);
+    }
 }
 
 #endif /*_SORT_HPP_*/
