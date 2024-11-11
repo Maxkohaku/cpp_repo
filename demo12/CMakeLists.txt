@@ -8,7 +8,6 @@ set(APP_NAME test)
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif()
-
 # 根据构建类型设置编译选项
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     message(STATUS "Configuring for Debug")
