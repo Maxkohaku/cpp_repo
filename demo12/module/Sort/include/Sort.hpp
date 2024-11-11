@@ -36,6 +36,7 @@ void bubbleSort(Vector<T>& vec, function<bool(const T& a, const T& b)> compFunc)
 template <typename T>
 void selectionSort(Vector<T>& vec, function<bool(const T& a, const T& b)> comFunc)
 {
+    DEBUG_LOG("call selectionSort");
     int size = vec.size();
     for(int i = 0; i < size - 1; ++ i)
     {
@@ -57,6 +58,7 @@ void selectionSort(Vector<T>& vec, function<bool(const T& a, const T& b)> comFun
 template <typename T>
 void insertionSort(Vector<T>& vec, function<bool(const T& a, const T& b)> comFunc)
 {
+    DEBUG_LOG("call insertionSort");
     int size = vec.size();
     for(int i = 1; i < size; ++i)
     {
@@ -74,6 +76,7 @@ void insertionSort(Vector<T>& vec, function<bool(const T& a, const T& b)> comFun
 template <typename T>
 void shellSort(Vector<T>& vec, function<bool(const T& a, const T& b)> comFunc)
 {
+    DEBUG_LOG("call shellSort");
     int size = vec.size();
     for(int gap = size / 2; gap > 0; gap /= 2)
     {
@@ -94,6 +97,7 @@ void shellSort(Vector<T>& vec, function<bool(const T& a, const T& b)> comFunc)
 template <typename T>
 void quickSort(Vector<T>& vec, int left, int right, function<bool(const T& a, const T& b)> comFuncAoverB)
 {
+    DEBUG_LOG("call quickSort");
     if(left > right)
     {
         return;
@@ -130,6 +134,7 @@ void quickSort(Vector<T>& vec, int left, int right, function<bool(const T& a, co
 template <typename T>
 void mergeSort(Vector<T>& vec, int left, int right, function<bool(const T& a, const T& b)> comFuncAoverB)
 {
+    DEBUG_LOG("call mergeSort");
     if(left >= right)
     {
         return;
@@ -168,6 +173,7 @@ void mergeSort(Vector<T>& vec, int left, int right, function<bool(const T& a, co
 template <typename T>
 void heapfy(Vector<T>& vec, int len, int parent, function<bool(const T& a, const T& b)> comFuncAoverB)
 {
+    DEBUG_LOG("call heapfy");
     int largest = parent;
     int left = 2 * parent + 1;
     int right = 2 * parent + 2;
@@ -189,6 +195,7 @@ void heapfy(Vector<T>& vec, int len, int parent, function<bool(const T& a, const
 template <typename T>
 void heapSort(Vector<T>& vec, function<bool(const T& a, const T& b)> comFuncAoverB)
 {
+    DEBUG_LOG("call heapSort");
     int size = vec.size();
     for(int i = size / 2 - 1; i >= 0; --i)
     {
