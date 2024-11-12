@@ -18,15 +18,18 @@ compile()
         exit -1
     else
         cd -
-        echo "编译成功!\n--------------------"
+        echo "编译成功!\n---------------------------------"
     fi
 }
 run()
 {
     echo "本次运行的程序md5sum信息如下:"
     md5sum $app_file
+    ulimit -c unlimited
+    echo "ynh123" | sudo -S bash -c 'echo /home/ynh/git_ws/cpp_repo/demo12/coredump/core-%e-%p-%t > /proc/sys/kernel/core_pattern'
+    echo "---------------------------------"
     ${app_file}
-    echo "--------------------\n运行结束!"
+    echo "---------------------------------\n运行结束!"
 }
 main()
 {

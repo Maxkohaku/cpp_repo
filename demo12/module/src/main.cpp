@@ -5,6 +5,7 @@
 #include "Vector.hpp"
 #include "Search.h"
 #include "Sort.hpp"
+#include "Stack.hpp"
 using namespace std;
 void test_vec()
 {
@@ -63,23 +64,20 @@ void test_sort()
     vec.append(p6);
     vec.append(p7);
     vec.append(p8);
-
     cout << "排序前:" << endl;
     for(int i = 0; i < vec.size(); ++i)
     {
         vec[i].show();
     }
-
     auto pointCom = function<bool(const Point& a, const Point& b)>([](const Point& a, const Point& b){
         return (a.m_x * a.m_y >= b.m_x * b.m_y);
     });
-
-    // bubbleSort(vec, pointCom);
-    // selectionSort(vec, pointCom);
-    //insertionSort(vec, pointCom);
-    //shellSort(vec, pointCom);
-    // quickSort(vec, 0, vec.size() - 1 ,pointCom);
-    // mergeSort(vec, 0, vec.size() - 1 ,pointCom);
+    bubbleSort(vec, pointCom);
+    selectionSort(vec, pointCom);
+    insertionSort(vec, pointCom);
+    shellSort(vec, pointCom);
+    quickSort(vec, 0, vec.size() - 1 ,pointCom);
+    mergeSort(vec, 0, vec.size() - 1 ,pointCom);
     heapSort(vec, pointCom);
     cout << "排序后:" << endl;
     for(int i = 0; i < vec.size(); ++i)
@@ -88,8 +86,27 @@ void test_sort()
     }
 }
 
+void test_stack()
+{
+    Stack<int> stack;
+    for(int i = 0; i < 10; ++i)
+    {
+        stack.push(i);
+    }
+    for(int i = 0; i < 10; ++i)
+    {
+        cout  << stack.peek() << " ";
+    }
+    cout << endl;
+    for(int i = 0; i < 10; ++i)
+    {
+        cout << stack.pop() << " ";
+    }
+    cout << endl;
+}
+
 int main(int argc, char * argv[])
 {
-    test_sort();
+    test_stack();
     return 0;
 }

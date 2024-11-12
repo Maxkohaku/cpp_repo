@@ -18,8 +18,7 @@ int binarySearchNorecursive(const Vector<int>& vec, int target)
         else
         {
             left = mid + 1;
-        }
-        
+        }   
     }
     return -1;
 }
