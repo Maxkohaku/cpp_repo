@@ -1,4 +1,4 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env sh
 current_dir="$(dirname "$(realpath "$0")")"
 build_dir=${current_dir}/build
 output_dir=${current_dir}/output
