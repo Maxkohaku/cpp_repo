@@ -1,9 +1,9 @@
-cmake_minimum_required(VERSION 3.0.0)
+cmake_minimum_required(VERSION 3.30.0)
 project(app)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(APP_NAME test)
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden")
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibilitsy=hidden")
 # 设置默认构建类型为 Release
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)

@@ -12,7 +12,7 @@
 using namespace std;
 
 template <typename T>
-void bubbleSort(Vector<T>& vec, function<bool(const T& a, const T& b)> compFunc)
+void bubbleSort(Vector<T>& vec)
 {
     DEBUG_LOG("call bubbleSort");
     int size = vec.size();
@@ -21,7 +21,7 @@ void bubbleSort(Vector<T>& vec, function<bool(const T& a, const T& b)> compFunc)
         bool swapped = false;
         for(int j = 0; j < size - i -1; ++j)
         {
-            if(compFunc(vec[j], vec[j+1]))
+            if(vec[j] > vec[j+1])
             {
                 swap(vec[j], vec[j+1]);
                 swapped = true;
@@ -35,7 +35,7 @@ void bubbleSort(Vector<T>& vec, function<bool(const T& a, const T& b)> compFunc)
 }
 
 template <typename T>
-void selectionSort(Vector<T>& vec, function<bool(const T& a, const T& b)> isAoverB)
+void selectionSort(Vector<T>& vec)
 {
     DEBUG_LOG("call selectionSort");
     int size = vec.size();
@@ -44,7 +44,7 @@ void selectionSort(Vector<T>& vec, function<bool(const T& a, const T& b)> isAove
         int minPos = i;
         for(int j = i + 1; j < size; ++j)
         {
-            if(isAoverB(vec[minPos], vec[j]))
+            if(vec[minPos] > vec[j])
             {
                 minPos = j;
             }
@@ -57,7 +57,7 @@ void selectionSort(Vector<T>& vec, function<bool(const T& a, const T& b)> isAove
 }
 
 template <typename T>
-void insertionSort(Vector<T>& vec, function<bool(const T& a, const T& b)> isAoverB)
+void insertionSort(Vector<T>& vec)
 {
     DEBUG_LOG("call insertionSort");
     int size = vec.size();
@@ -65,7 +65,7 @@ void insertionSort(Vector<T>& vec, function<bool(const T& a, const T& b)> isAove
     {
         T key = vec[i];
         int j = i - 1;
-        while (j >= 0 && isAoverB(vec[j], key))
+        while (j >= 0 &&vec[j] > key)
         {
             vec[j+1] = vec[j];
             j--;
@@ -75,7 +75,7 @@ void insertionSort(Vector<T>& vec, function<bool(const T& a, const T& b)> isAove
 }
 
 template <typename T>
-void shellSort(Vector<T>& vec, function<bool(const T& a, const T& b)> isAoverB)
+void shellSort(Vector<T>& vec)
 {
     DEBUG_LOG("call shellSort");
     int size = vec.size();
@@ -85,7 +85,7 @@ void shellSort(Vector<T>& vec, function<bool(const T& a, const T& b)> isAoverB)
         {
             T temp = vec[i];
             int j = i - gap;
-            while(j >= 0 && isAoverB(vec[j], temp))
+            while(j >= 0 && vec[j] > temp)
             {
                 vec[j+gap] = vec[j];
                 j -= gap;
@@ -96,7 +96,7 @@ void shellSort(Vector<T>& vec, function<bool(const T& a, const T& b)> isAoverB)
 }
 
 template <typename T>
-void quickSort(Vector<T>& vec, int left, int right, function<bool(const T& a, const T& b)> isAoverB)
+void quickSort(Vector<T>& vec, int left, int right)
 {
     DEBUG_LOG("call quickSort");
     if(left > right)
@@ -108,7 +108,7 @@ void quickSort(Vector<T>& vec, int left, int right, function<bool(const T& a, co
     int end = right;
     while(begin < end)
     {
-        while(begin < end && isAoverB(vec[end],pivot))
+        while(begin < end && vec[end] > pivot)
         {
             end--;
         }
@@ -117,7 +117,7 @@ void quickSort(Vector<T>& vec, int left, int right, function<bool(const T& a, co
             vec[begin] = vec[end];
             begin++;
         }
-        while(begin < end && isAoverB(pivot, vec[begin]))
+        while(begin < end && pivot > vec[begin])
         {
             begin++;
         }
@@ -128,12 +128,12 @@ void quickSort(Vector<T>& vec, int left, int right, function<bool(const T& a, co
         }
     }
     vec[begin] = pivot;
-    quickSort(vec, left, begin - 1, isAoverB);
-    quickSort(vec, begin + 1, right, isAoverB);
+    quickSort(vec, left, begin - 1);
+    quickSort(vec, begin + 1, right);
 }
 
 template <typename T>
-void mergeSort(Vector<T>& vec, int left, int right, function<bool(const T& a, const T& b)> isAoverB)
+void mergeSort(Vector<T>& vec, int left, int right)
 {
     DEBUG_LOG("call mergeSort");
     if(left >= right)
@@ -141,14 +141,14 @@ void mergeSort(Vector<T>& vec, int left, int right, function<bool(const T& a, co
         return;
     }
     int mid = (left + right) / 2;
-    mergeSort(vec, left, mid, isAoverB);
-    mergeSort(vec, mid + 1, right, isAoverB);
+    mergeSort(vec, left, mid);
+    mergeSort(vec, mid + 1, right);
     int leftHead = left;
     int rightHead = mid + 1;
     Vector<T> tmp;
     while(leftHead <= mid && rightHead <= right)
     {
-        if(isAoverB(vec[rightHead], vec[leftHead]))
+        if(vec[rightHead] > vec[leftHead])
         {
             tmp.append(vec[leftHead++]);
         }
@@ -172,40 +172,40 @@ void mergeSort(Vector<T>& vec, int left, int right, function<bool(const T& a, co
 }
 
 template <typename T>
-void heapfy(Vector<T>& vec, int len, int parent, function<bool(const T& a, const T& b)> isAoverB)
+void heapfy(Vector<T>& vec, int len, int parent)
 {
     DEBUG_LOG("call heapfy");
     int largest = parent;
     int left = 2 * parent + 1;
     int right = 2 * parent + 2;
-    if(left < len && isAoverB(vec[left], vec[largest]))
+    if(left < len && vec[left] > vec[largest])
     {
         largest = left;
     }
-    if(right < len && isAoverB(vec[right], vec[largest]))
+    if(right < len && vec[right] > vec[largest])
     {
         largest = right;
     }
     if(largest != parent)
     {
         swap(vec[largest], vec[parent]);
-        heapfy(vec, len, largest, isAoverB);
+        heapfy(vec, len, largest);
     }
 }
 
 template <typename T>
-void heapSort(Vector<T>& vec, function<bool(const T& a, const T& b)> isAoverB)
+void heapSort(Vector<T>& vec)
 {
     DEBUG_LOG("call heapSort");
     int size = vec.size();
     for(int i = size / 2 - 1; i >= 0; --i)
     {
-        heapfy(vec, size, i, isAoverB);
+        heapfy(vec, size, i);
     }
     for(int i = size - 1; i > 0; --i)
     {
         swap(vec[i], vec[0]);
-        heapfy(vec, i, 0, isAoverB);
+        heapfy(vec, i, 0);
     }
 }
 

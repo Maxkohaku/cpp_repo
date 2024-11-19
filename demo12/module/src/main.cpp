@@ -6,6 +6,7 @@
 #include "Search.h"
 #include "Sort.hpp"
 #include "Stack.hpp"
+#include "Point.hpp"
 using namespace std;
 void test_vec()
 {
@@ -32,19 +33,6 @@ void test_search()
     cout << "Recursive vec[" << pos << "] = " << vec[pos] << endl;
 }
 
-class Point
-{
-public:
-    Point():m_x(0), m_y(0){}
-    Point(int x, int y):m_x(x), m_y(y){}
-    int m_x;
-    int m_y;
-    void show()
-    {
-        cout << "x = " << m_x << ", y = " << m_y << ", x * y = " << m_x * m_y << endl;
-    }
-};
-
 void test_sort()
 {
     Vector<Point> vec;
@@ -69,16 +57,16 @@ void test_sort()
     {
         vec[i].show();
     }
-    auto pointCom = function<bool(const Point& a, const Point& b)>([](const Point& a, const Point& b){
-        return (a.m_x * a.m_y >= b.m_x * b.m_y);
-    });
-    bubbleSort(vec, pointCom);
-    selectionSort(vec, pointCom);
-    insertionSort(vec, pointCom);
-    shellSort(vec, pointCom);
-    quickSort(vec, 0, vec.size() - 1 ,pointCom);
-    mergeSort(vec, 0, vec.size() - 1 ,pointCom);
-    heapSort(vec, pointCom);
+    // auto pointCom = function<bool(const Point& a, const Point& b)>([](const Point& a, const Point& b){
+    //     return (a.m_x * a.m_y >= b.m_x * b.m_y);
+    // });
+    bubbleSort(vec);
+    // selectionSort(vec);
+    // insertionSort(vec);
+    // shellSort(vec);
+    // quickSort(vec, 0, vec.size() - 1);
+    // mergeSort(vec, 0, vec.size() - 1);
+    // heapSort(vec);
     cout << "排序后:" << endl;
     for(int i = 0; i < vec.size(); ++i)
     {
@@ -107,6 +95,6 @@ void test_stack()
 
 int main(int argc, char * argv[])
 {
-    test_stack();
+    test_sort();
     return 0;
 }
