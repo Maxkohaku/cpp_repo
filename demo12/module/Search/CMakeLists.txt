@@ -1,14 +1,13 @@
-cmake_minimum_required(VERSION 3.30.0)
+cmake_minimum_required(VERSION 3.0.0)
 project(app)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
-set(APP_NAME test)
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibilitsy=hidden")
-# 设置默认构建类型为 Release
+set(SEARCH_LIB_SHARED Search)
+set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif()
-# 根据构建类型设置编译选项
+
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     message(STATUS "Configuring for Debug")
     set(CMAKE_CXX_FLAGS_DEBUG "-g")
@@ -17,14 +16,12 @@ else()
     set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 endif()
 
-set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/output)
+file(GLOB_RECURSE SOURCES_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/**.cpp)
 
-file(GLOB_RECURSE SOURCES_FILES 
-${CMAKE_CURRENT_SOURCE_DIR}/module/src/**.cpp)
 file(GLOB_RECURSE HEAD_FILES 
-${CMAKE_CURRENT_SOURCE_DIR}/module/**.hpp
-${CMAKE_CURRENT_SOURCE_DIR}/module/**.tpp
-${CMAKE_CURRENT_SOURCE_DIR}/module/**.h)
+${CMAKE_CURRENT_SOURCE_DIR}/../**.h
+${CMAKE_CURRENT_SOURCE_DIR}/../**.hpp
+)
 set(HEADER_DIRS "")
 foreach(HEADER_FILE ${HEAD_FILES})
     get_filename_component(HEADER_DIR ${HEADER_FILE} DIRECTORY)
@@ -32,8 +29,7 @@ foreach(HEADER_FILE ${HEAD_FILES})
 endforeach()
 list(REMOVE_DUPLICATES HEADER_DIRS)
 
-file(GLOB_RECURSE LIBS_FILES 
-${CMAKE_CURRENT_SOURCE_DIR}/module/**.so)
+file(GLOB_RECURSE LIBS_FILES ${CMAKE_CURRENT_SOURCE_DIR}/../**.so)
 set(LIBS_DIRS "")
 foreach(LIBS_FILE ${LIBS_FILES})
     get_filename_component(LIBS_DIR ${LIBS_FILE} DIRECTORY)
@@ -45,13 +41,12 @@ message("SOURCES_FILES:" ${SOURCES_FILES})
 message("HEADER_DIRS:" ${HEADER_DIRS})
 message("LIBS_DIRS:" ${LIBS_DIRS})
 
-add_executable(${APP_NAME} ${SOURCES_FILES})
-target_link_directories(${APP_NAME} PRIVATE ${LIBS_DIRS})
-target_include_directories(${APP_NAME} PRIVATE ${HEADER_DIRS})
-target_link_libraries(${APP_NAME} PRIVATE Vector Search Sort)
-
+add_library(${SEARCH_LIB_SHARED} SHARED ${SOURCES_FILES})
+target_include_directories(${SEARCH_LIB_SHARED} PUBLIC ${HEADER_DIRS})
+target_link_directories(${SEARCH_LIB_SHARED} PRIVATE ${LIBS_DIRS})
+target_link_libraries(${SEARCH_LIB_SHARED} PRIVATE Vector)
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
-    target_compile_definitions(${APP_NAME} PRIVATE DEBUG=false)
+    target_compile_definitions(${SEARCH_LIB_SHARED} PRIVATE DEBUG=false)
 else()
-    target_compile_definitions(${APP_NAME} PRIVATE DEBUG=true)
+    target_compile_definitions(${SEARCH_LIB_SHARED} PRIVATE DEBUG=true)
 endif()
