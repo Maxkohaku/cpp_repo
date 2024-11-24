@@ -6,7 +6,8 @@ set(APP_NAME test)
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibilitsy=hidden")
 # 设置默认构建类型为 Release
 if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE Release)
+    set(CMAKE_BUILD_TYPE Debug)
+    # set(CMAKE_BUILD_TYPE Release)
 endif()
 # 根据构建类型设置编译选项
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -48,7 +49,7 @@ message("LIBS_DIRS:" ${LIBS_DIRS})
 add_executable(${APP_NAME} ${SOURCES_FILES})
 target_link_directories(${APP_NAME} PRIVATE ${LIBS_DIRS})
 target_include_directories(${APP_NAME} PRIVATE ${HEADER_DIRS})
-target_link_libraries(${APP_NAME} PRIVATE Vector Search Sort)
+target_link_libraries(${APP_NAME} PRIVATE Vector)
 
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
     target_compile_definitions(${APP_NAME} PRIVATE DEBUG=false)
