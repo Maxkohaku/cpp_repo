@@ -11,3 +11,5 @@ demo8:cpp-11可调用对象绑定器
 demo9:cpp-11lambda表达式
 demo10:单例模式和线程安全
 demo11:工厂模式和抽象工厂模式
+demo12:数据结构
+demo13:排序算法
