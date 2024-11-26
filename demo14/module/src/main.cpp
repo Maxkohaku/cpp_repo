@@ -2,7 +2,7 @@
 #include <string>
 #include <chrono>
 #include <thread>
-#include "ynhLog.hpp"
+#include "ynhLog.h"
 using namespace std;
 
 
