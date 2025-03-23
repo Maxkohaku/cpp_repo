@@ -14,3 +14,4 @@ demo11:工厂模式和抽象工厂模式
 demo12:数据结构
 demo13:排序算法
 demo14:ynhLog
+demo15:设计模式
