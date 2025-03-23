@@ -1,3 +1,4 @@
+#pragma once
 #ifndef _STRATEGY_HPP_
 #define _STRATEGY_HPP_
 #include <iostream>

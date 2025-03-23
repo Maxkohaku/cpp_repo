@@ -5,7 +5,6 @@
 #include <string>
 #include <memory>
 #include <fstream>
-
 class FileAbstract
 {
 public:
@@ -70,5 +69,4 @@ void proxy()
     FileProxy fileAdmin("/home/ynh/git_ws/cpp_repo/demo15/CMakeLists.txt", true);
     fileAdmin.readFile();
 }
-
 #endif /*_PROXY_HPP_*/

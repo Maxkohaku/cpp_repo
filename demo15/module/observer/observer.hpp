@@ -1,3 +1,4 @@
+#pragma once
 #ifndef _OBSERVER_HPP_
 #define _OBSERVER_HPP_
 #include <iostream>
