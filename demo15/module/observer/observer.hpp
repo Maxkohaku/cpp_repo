@@ -26,25 +26,27 @@ class Topic
 public:
     Topic(const std::string topicName) : _topicName(topicName) {}
     ~Topic() = default;
-    void attach(ObserverAbstract* observer)
+    void attach(const std::shared_ptr<ObserverAbstract>& observer)
     {
         std::lock_guard<std::mutex> locker(_mutex);
         auto it = std::find(_observers.begin(), _observers.end(), observer);
         if (it == _observers.end())
         {
             _observers.push_back(observer);
+            std::cout << observer->name() << "|subscribe:" << _topicName << std::endl;
         } 
     }
-    void detach(ObserverAbstract* observer)
+    void detach(const std::shared_ptr<ObserverAbstract>& observer)
     {
         std::lock_guard<std::mutex> locker(_mutex);
         auto it = std::find(_observers.begin(), _observers.end(), observer);
         if (it != _observers.end())
         {
             _observers.erase(it);
+            std::cout << observer->name() << "|unsubscribe:" << _topicName << std::endl;
         }
     }
-    void notify(const std::string& message, ObserverAbstract* observer)
+    void notify(const std::string& message, const std::shared_ptr<ObserverAbstract>& observer)
     {   
         std::lock_guard<std::mutex> locker(_mutex);
         for (auto _obs : _observers)
@@ -55,18 +57,18 @@ public:
             }
         }
     }
-    void publish(const std::string& message, ObserverAbstract* observer)
+    void publish(const std::string& message, const std::shared_ptr<ObserverAbstract>& observer)
     {
         std::cout << observer->name() << "|send:" << message << std::endl;
         notify(message, observer);
     }
 private:
     std::string _topicName;
-    std::vector<ObserverAbstract*> _observers;
+    std::vector<std::shared_ptr<ObserverAbstract>> _observers;
     std::mutex _mutex;
 
 };
-class Observer : public ObserverAbstract
+class Observer : public ObserverAbstract, public std::enable_shared_from_this<Observer>
 {
 public:
     Observer(const std::string name) : ObserverAbstract(name) {}
@@ -77,30 +79,30 @@ public:
     }
     void subscribe(Topic& topic)
     {
-        topic.attach(this);
+        topic.attach(shared_from_this());
     }
     void unsubscribe(Topic& topic)
     {
-        topic.detach(this);
+        topic.detach(shared_from_this());
     }
     void publish(Topic& topic, const std::string& message)
     {
-        topic.publish(message, this);
+        topic.publish(message, shared_from_this());
     }
 };
 
 void observer()
 {
-    Topic topic("TomeAndJerry");
-    Observer Tom("Tom");
-    Observer Jerry("Jerry");
-    Observer Spike("Spike");
-    Tom.subscribe(topic);
-    Jerry.subscribe(topic);
-    Spike.subscribe(topic);
-    Tom.publish(topic, "what a nice day is today");
-    Spike.unsubscribe(topic);
-    Jerry.publish(topic, "let's go!");
+    Topic topic("TomAndJerry");
+    auto Tom = std::make_shared<Observer>("Tom");
+    auto Jerry = std::make_shared<Observer>("Jerry");
+    auto Spike = std::make_shared<Observer>("Spike");
+    Tom->subscribe(topic);
+    Jerry->subscribe(topic);
+    Spike->subscribe(topic);
+    Tom->publish(topic, "what a nice day is today");
+    Spike->unsubscribe(topic);
+    Jerry->publish(topic, "let's go!");
 }
 
 #endif

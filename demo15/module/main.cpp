@@ -3,12 +3,16 @@
 #include "strategy.hpp"
 #include "observer.hpp"
 #include "proxy.hpp"
+#include "adapter.hpp"
+#include "decorator.hpp"
 int main()
 {
-    // singleton();
+    singleton();
     factoryNew();
-    // strategy();
-    // observer();
-    // proxy();
+    strategy();
+    observer();
+    proxy();
+    adapter();
+    decorator();
     return 0;
 }
