@@ -63,10 +63,10 @@ private:
 void proxy()
 {
     std::cout << "guest access: " << std::endl;
-    FileProxy fileGuest("/home/ynh/git_ws/cpp_repo/demo15/CMakeLists.txt", false);
+    FileProxy fileGuest("/home/ynh/git_ws/cpp_repo/demo15/module/main.cpp", false);
     fileGuest.readFile();
     std::cout << "admin access: " << std::endl;
-    FileProxy fileAdmin("/home/ynh/git_ws/cpp_repo/demo15/CMakeLists.txt", true);
+    FileProxy fileAdmin("/home/ynh/git_ws/cpp_repo/demo15/module/main.cpp", true);
     fileAdmin.readFile();
 }
 #endif /*_PROXY_HPP_*/
