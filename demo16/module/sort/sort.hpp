@@ -40,6 +40,14 @@ public:
     {
         quick(0, _vec->size() - 1);
     }
+    void mergeSort()
+    {
+        merge(0, _vec->size() - 1);
+    }
+    void heapSort()
+    {
+        heap();
+    }
     private:
     std::shared_ptr<std::vector<T>> _vec;
     void bubble();
@@ -47,6 +55,9 @@ public:
     void insertion();
     void shell();
     void quick(int left, int right);
+    void merge(int left, int right);
+    void heap();
+    void heapfy(int len, int parent);
 };
 template <typename T>
 void SortTool<T>::bubble()
@@ -159,6 +170,77 @@ void SortTool<T>::quick(int left, int right)
     quick(left, begin - 1);
     quick(end + 1, right);
 }
+template <typename T>
+void SortTool<T>::merge(int left, int right)
+{
+    if (left >= right)
+    {
+        return;
+    }
+    int mid = left + (right - left) / 2;
+    merge(left, mid);
+    merge(mid + 1, right);
+    int lPos = left;
+    int rPos = mid + 1;
+    std::vector<T> tmpVec;
+    while (lPos <= mid && rPos <= right)
+    {
+        if ((*_vec)[lPos] < (*_vec)[rPos])
+        {
+            tmpVec.push_back((*_vec)[lPos++]);
+        }
+        else
+        {
+            tmpVec.push_back((*_vec)[rPos++]);
+        }
+    }
+    while (lPos <= mid)
+    {
+        tmpVec.push_back((*_vec)[lPos++]);
+    }
+    while (rPos <= right)
+    {
+        tmpVec.push_back((*_vec)[rPos++]);
+    }
+    for (int i = left, j = 0; i <= right; ++i)
+    {
+        (*_vec)[i] = tmpVec[j++];
+    }
+}
+template <typename T>
+void SortTool<T>::heapfy(int len, int parent)
+{
+    int largest = parent;
+    int left = parent * 2 + 1;
+    int right = parent * 2 + 2;
+    if (left < len && (*_vec)[left] > (*_vec)[largest])
+    {
+        largest = left;
+    }
+    if (right < len && (*_vec)[right] > (*_vec)[largest])
+    {
+        largest = right;
+    }
+    if (largest != parent)
+    {
+        std::swap((*_vec)[largest], (*_vec)[parent]);
+        heapfy(len, largest);
+    }
+}
+template <typename T>
+void SortTool<T>::heap()
+{
+    int size = _vec->size();
+    for (int i = size / 2 - 1; i >= 0; --i)
+    {
+        heapfy(size, i);
+    }
+    for (int i = size - 1; i >= 0; --i)
+    {
+        std::swap((*_vec)[0], (*_vec)[i]);
+        heapfy(i, 0);
+    }
+}
 } // namespace VectorSort
 void sort()
 {
@@ -168,7 +250,9 @@ void sort()
     // sortTool.selectionSort();
     // sortTool.insertionSort();
     // sortTool.shellSort();
-    sortTool.quickSort();
+    // sortTool.quickSort();
+    // sortTool.mergeSort();
+    sortTool.heapSort();
     sortTool.show();
 }
 
