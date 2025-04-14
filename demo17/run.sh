@@ -3,12 +3,23 @@ current_dir="$(dirname "$(realpath "$0")")"
 build_dir=${current_dir}/build
 output_dir=${current_dir}/output
 app_file=${output_dir}/test
+coredump_file=${current_dir}/coredump
+passwd="ynh"
 compile()
 {   
     if [ -d ${build_dir} ]; then
         rm -rf ${build_dir}
     fi  
     mkdir -p ${build_dir}
+
+    if [ -d ${coredump_file} ]; then
+        rm -rf ${coredump_file}
+    fi  
+    mkdir -p ${coredump_file}
+    ulimit -c unlimited
+    echo "${passwd}" | sudo -S sh -c "echo '${coredump_file}/core-%e-%p-%t' > /proc/sys/kernel/core_pattern"
+
+
     cd ${build_dir}
     cmake ..
     make
