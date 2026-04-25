@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/test.dir/module/src/main.cpp.o -o /home/ynh/git_ws/cpp_repo/test/output/test  -lpthread 
