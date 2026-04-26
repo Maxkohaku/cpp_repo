@@ -7,12 +7,12 @@
 #include "decorator.hpp"
 int main()
 {
-    singleton();
-    factoryNew();
-    strategy();
+    // singleton();
     observer();
-    proxy();
-    adapter();
-    decorator();
+    // factoryNew();
+    // strategy();
+    // proxy();
+    // adapter();
+    // decorator();
     return 0;
 }

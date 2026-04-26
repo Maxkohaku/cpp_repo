@@ -5,6 +5,21 @@
 #include <string>
 #include <memory>
 #include <mutex>
+class SingletonMeyers {
+public:
+    static SingletonMeyers& getInstance() {
+        static SingletonMeyers _instance;
+        return _instance;
+    }
+private:
+    SingletonMeyers() = default;
+    ~SingletonMeyers() = default;
+    SingletonMeyers(const SingletonMeyers&) = delete;
+    SingletonMeyers& operator=(const SingletonMeyers&) = delete;
+    SingletonMeyers(SingletonMeyers&&) = delete;
+    SingletonMeyers& operator=(SingletonMeyers&&) = delete;
+};
+
 class SingletonEager
 {
 public:

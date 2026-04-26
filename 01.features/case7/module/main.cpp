@@ -1,135 +1,94 @@
+/**
+ * 1. unique_ptr：独占所有权，禁止拷贝、支持move，RAII自动释放，性能最优
+ * 2. shared_ptr：双计数器(强计数/弱计数)，强计数管理对象生命周期，支持共享拷贝
+ * 3. weak_ptr：弱引用，不增加强计数，用于观测对象、解决shared_ptr循环引用内存泄漏
+ */
 #include <iostream>
 #include <string>
 #include <chrono>
 #include <thread>
 #include <memory>
 using namespace std;
-class Person
+#include <iostream>
+#include <memory>
+using namespace std;
+
+struct TestObj
 {
-private:
-    std::string _name;
-    size_t _age;
-    std::weak_ptr<Person> _bestFriend;
-public:
-    Person(std::string name, size_t age): _name(name), _age(age) 
-    {
-        cout << "Person Created" << endl;
-    }
-    ~Person()
-    {
-        cout << "Person Destroyed" << endl;
-    }
-    void show() const
-    {
-        cout << "name:" << _name << "|age:" << _age << endl;
-    }
-    void getBestFriend(const std::weak_ptr<Person>& person)
-    {
-        _bestFriend = person;
-    }
-    void showBestFriend() const
-    {
-        if (auto person = _bestFriend.lock())
-        {
-            cout << _name << "'s best friend is " << person->_name << endl;
-            
-        }
-        else
-        {
-            cout << _name << "'s best friend is no longer exists" << endl;
-        }
-    }
+    TestObj()  { cout << "TestObj 构造\n"; }
+    ~TestObj() { cout << "TestObj 析构\n"; }
 };
 
-class Friend
-{
-private:
-    std::string _name;
-    size_t _age;
-    std::shared_ptr<Friend> _bestFriend;
-public:
-    Friend(std::string name, size_t age): _name(name), _age(age) 
-    {
-        cout << "Friend Created" << endl;
-    }
-    ~Friend()
-    {
-        cout << "Friend Destroyed" << endl;
-    }
-    void show() const
-    {
-        cout << "name:" << _name << "|age:" << _age << endl;
-    }
+struct B;
 
-    void getBestFriend(const std::shared_ptr<Friend>& person)
-    {
-        _bestFriend = person;
-    }
-    void showBestFriend() const
-    {
-        if (_bestFriend)
-        {
-            cout << _name << "'s best friend is " << _bestFriend->_name << endl;
-        }
-        else 
-        {
-            cout << _name << "'s best friend is no longer exists" << endl;
-        }
-    }
+struct A
+{
+    // shared_ptr 会增加强计数
+    weak_ptr<B> b_ptr;
+    ~A() { cout << "A 析构\n"; }
+};
+
+struct B
+{
+    // 弱引用：不增加强引用计数
+    weak_ptr<A> a_ptr;
+    ~B() { cout << "B 析构\n"; }
 };
 
 void funcCallA()
 {
-    //unique_ptr
-    auto personUniquePtr1 = std::make_unique<Person>("ynh", 28);
-    personUniquePtr1->show();
+    // 独占式智能指针
+    unique_ptr<TestObj> p1 = make_unique<TestObj>();
 
-    // personUniquePtr1->show(); //personUniquePtr1转移资源后为空指针, 访问会coredump
-    auto personUniquePtr2 = std::move(personUniquePtr1);
+    // ❶ 禁止拷贝编译报错
+    // unique_ptr<TestObj> p2 = p1;
+
+    // ❷ 只允许 move 转移所有权
+    unique_ptr<TestObj> p3 = move(p1);
+
+    // p1 已悬空
+    if (!p1)
+    {
+        cout << "p1 失去所有权\n";
+    }
+
+    // 出作用域 p3 自动析构释放对象
 }
 
 void funcCallB()
 {
-    //share_ptr
-    auto personSharedPtr1 = std::make_shared<Person>("ynh", 28);
-    personSharedPtr1->show();
-    auto personSharedPtr2 = personSharedPtr1;
-    cout << "shared count: " << personSharedPtr1.use_count();
-    personSharedPtr1->show();
-    personSharedPtr2->show();
+    // 强引用计数：strong_count
+    shared_ptr<TestObj> s1 = make_shared<TestObj>();
+    cout << "s1 计数: " << s1.use_count() << endl;
+
+    // 拷贝共享，计数+1
+    shared_ptr<TestObj> s2 = s1;
+    cout << "s1 计数: " << s1.use_count() << endl;
+
+    // 手动释放当前引用，计数-1
+    s2.reset();
+    cout << "s1 计数: " << s1.use_count() << endl;
+
+    // ❶ 强计数为0 → 对象销毁
+    // ❷ 强计数+弱计数都为0 → 控制块销毁
 }
 
 void funcCallC()
 {
-    //shared_ptr循环引用
-    auto ynh = std::make_shared<Friend>("ynh", 28);
-    auto bmg = std::make_shared<Friend>("bmg", 18);
-    ynh->getBestFriend(bmg); //ref(bmg) + 1 = 2
-    bmg->getBestFriend(ynh); //ref(ynh) + 1 = 2
-    ynh->showBestFriend();
-    bmg->showBestFriend();
-    cout << "count: " << ynh.use_count();
+    shared_ptr<A> a = make_shared<A>();
+    shared_ptr<B> b = make_shared<B>();
 
-    //手动释放
-    ynh.reset(); //ref(ynh) -1 = 1 > 0 不析构
-    bmg.reset(); //ref(bmg) -1 = 1 > 0 不析构
-}
+    // 互相弱引用，不会造成强计数循环卡死
+    a->b_ptr = b;
+    b->a_ptr = a;
 
-void funcCallD()
-{
-    //weak_ptr
-    auto ynh = std::make_shared<Person>("ynh", 28);
-    auto bmg = std::make_shared<Person>("bmg", 18);
-    ynh->getBestFriend(bmg); //不增加引用计数，ref(bmg) = 1
-    bmg->getBestFriend(ynh); //不增加引用计数，ref(ynh) = 1
-    ynh->showBestFriend();
-    bmg->showBestFriend();
-    cout << "count: " << ynh.use_count(); 
+    // lock()：安全提升为 shared_ptr
+    if (auto tmp = a->b_ptr.lock())
+    {
+        cout << "对象有效\n";
+    }
 
-    //演示释放
-    ynh.reset(); // ref(ynh) -1 = 0
-    cout << "count: " << ynh.use_count(); 
-    // ynh->showBestFriend();//对象均已释放，非法访问
+    // 出作用域：强引用全部销毁，无内存泄漏
 }
 
 int main(int argc, char *argv[])
@@ -137,6 +96,5 @@ int main(int argc, char *argv[])
     // funcCallA();
     // funcCallB();
     // funcCallC();
-    funcCallD();
     return 0;
 }
