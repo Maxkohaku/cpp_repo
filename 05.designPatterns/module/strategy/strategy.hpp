@@ -2,76 +2,65 @@
 #ifndef _STRATEGY_HPP_
 #define _STRATEGY_HPP_
 #include <iostream>
+#include <string>
 #include <memory>
-
-class PaymentStrategy
-{
+using namespace std;
+class Payment {
 public:
+    Payment() = default;
+    virtual ~Payment() = default;
     virtual void pay(double amount) = 0;
-    virtual ~PaymentStrategy() = default;
-};
-
-class PayPalPayment : public PaymentStrategy
-{
-public:
-    void pay(double amount) override
-    {
-        std::cout << "pay by PayPal : " << amount << std::endl;
-    }
-};
-
-class AlipayPayment : public PaymentStrategy
-{
-public:
-    void pay(double amount) override
-    {
-        std::cout << "pay by Alipay : " << amount << std::endl;
-    }  
-};
-
-class WechatPayment : public PaymentStrategy
-{
-public:
-    void pay(double amount) override
-    {
-        std::cout << "pay by Wechat : " << amount << std::endl;
-    } 
-};
-
-class Order
-{
-public:
-    void setPaymentStrategy(std::unique_ptr<PaymentStrategy> paymentStrategy)
-    {
-        _paymentStrategy = std::move(paymentStrategy);
-    }
-
-    void checkout(double amount)
-    {
-        if(_paymentStrategy)
-        {
-            _paymentStrategy->pay(amount);
-        }
-        else
-        {
-            std::cout << "no Payment Strategy" << std::endl;
-        }
-    }
-
 private:
-    std::unique_ptr<PaymentStrategy> _paymentStrategy;
+    string _name = "none";
 };
-
-void strategy()
-{
-    Order order;
+class PayPal : public Payment {
+public:
+    void pay(double amount) override {
+        cout << "pay for " << amount << " by " << _name << endl; 
+    }
+private:
+    string _name = "PayPal";
+};
+class WechatPay : public Payment {
+public:
+    void pay(double amount) override {
+        cout << "pay for " << amount << " by " << _name << endl; 
+    }
+private:
+    string _name = "WechatPay";
+};
+class AliPay : public Payment {
+public:
+    void pay(double amount) override {
+        cout << "pay for " << amount << " by " << _name << endl; 
+    }
+private:
+    string _name = "AliPay";
+};
+class PayStrategy {
+public:
+    using PaymentStrategy = unique_ptr<Payment>;
+    virtual ~PayStrategy() = default;
+    void setPayment(PaymentStrategy strategy) {
+        _strategy = move(strategy);
+    }
+    void checkout(double amount) {
+        if (_strategy == nullptr)
+             throw std::invalid_argument("_strategy is nullptr");
+        _strategy->pay(amount);
+    }
+protected:
+    PaymentStrategy _strategy;
+};
+void strategy() {
+    PayStrategy payStrategy;
     double amount = 200;
-    order.setPaymentStrategy(std::make_unique<PayPalPayment>());
-    order.checkout(amount);
-    order.setPaymentStrategy(std::make_unique<AlipayPayment>());
-    order.checkout(amount);
-    order.setPaymentStrategy(std::make_unique<WechatPayment>());
-    order.checkout(amount);
-}
 
+    payStrategy.setPayment(make_unique<PayPal>());
+    payStrategy.checkout(200);
+    payStrategy.setPayment(make_unique<AliPay>());
+    payStrategy.checkout(200);
+    payStrategy.setPayment(make_unique<WechatPay>());
+    payStrategy.checkout(200);
+}
 #endif /*_STRATEGY_HPP_*/
