@@ -5,68 +5,53 @@
 #include <string>
 #include <memory>
 #include <fstream>
-class FileAbstract
-{
+using namespace std;
+class FileReaderAbstract {
 public:
-    FileAbstract() = default;
-    virtual ~FileAbstract() = default;
-    virtual void readFile() = 0;
+    FileReaderAbstract() = default;
+    virtual ~FileReaderAbstract() = default;
+    virtual void fileReader() = 0;
 };
-class RealFile : public FileAbstract
-{
+class FileReader : public FileReaderAbstract {
 public:
-    explicit RealFile(const std::string& filename) :_filename(filename) {}
-    void readFile() override
-    {
-        std::ifstream file(_filename);
-        if(!file)
+    explicit FileReader(const string& fileName) : _fileName(fileName) {}
+    void fileReader() override {
+        ifstream file(_fileName);
+        if (!file)
+            throw invalid_argument("Failed to open file");
+        string line;
+        while (getline(file, line))
         {
-            std::cerr << "Failed to open file: " << _filename << std::endl;
-            return;
-        }
-        std::cout << "reading file: " << _filename << std::endl;
-        std::string line;
-        while (std::getline(file, line))
-        {
-            std::cout << line << std::endl;
+            cout << line << endl;
         }
         file.close();
     }
 private:
-    std::string _filename;
+    string _fileName;
 };
-class FileProxy : public FileAbstract
-{
+class FileReaderProxy : public FileReaderAbstract {
 public:
-    FileProxy(const std::string& filename, bool isAdmin) :_filename(filename), _isAdmin(isAdmin) {}
-    ~FileProxy() = default;
-    void readFile() override
-    {
-        if(_isAdmin == false)
+    FileReaderProxy(const string& fileName, bool isAdmin = false) : _fileName(fileName), _isAdmin(isAdmin) {}
+    void fileReader() override {
+        if (!_isAdmin)
         {
-            std::cerr << "access denied !" << std::endl;
+            cout << "No Permission to Access " << _fileName << endl;
             return;
         }
-
-        if(_realFile == nullptr)
-        {
-            _realFile = std::make_unique<RealFile>(_filename);
-        }
-        _realFile->readFile();
+        if (_fileReader == nullptr)
+            _fileReader = make_unique<FileReader>(_fileName);
+        _fileReader->fileReader();
     }
 private:
-    std::string _filename;
+    string _fileName;
     bool _isAdmin;
-    std::unique_ptr<RealFile> _realFile = nullptr;
+protected:
+    unique_ptr<FileReader> _fileReader;
 };
-
-void proxy()
-{
-    std::cout << "guest access: " << std::endl;
-    FileProxy fileGuest("/home/ynh/git_ws/cpp_repo/demo15/module/main.cpp", false);
-    fileGuest.readFile();
-    std::cout << "admin access: " << std::endl;
-    FileProxy fileAdmin("/home/ynh/git_ws/cpp_repo/demo15/module/main.cpp", true);
-    fileAdmin.readFile();
+void proxy() {
+    FileReaderProxy admin = FileReaderProxy("module/main.cpp", true);
+    admin.fileReader();
+    FileReaderProxy guest = FileReaderProxy("module/main.cpp");
+    guest.fileReader();
 }
 #endif /*_PROXY_HPP_*/
