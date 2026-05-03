@@ -5,142 +5,86 @@
 #include <string>
 #include <memory>
 #include <functional>
-class Shape
-{
+#include <unordered_map>
+using namespace std;
+class Shape {
 public:
     Shape() = default;
-    virtual ~Shape() = default; 
+    virtual ~Shape() = default;
     virtual void draw() = 0;
+private:
+    string _name = "none";
 };
-
-class Circle : public Shape
-{
+class Circle : public Shape {
 public:
-    Circle() = default;
-    ~Circle() = default;
-    void draw() override
-    {
-        std::cout << "draw shape: Circle" << std::endl;
-    }
-};
-class Triangle : public Shape
-{
-public:
-    void draw() override
-    {
-        std::cout << "draw shape: Triangle" << std::endl;
-    }
-};
-class Rectangle : public Shape 
-{
-public:
-    void draw() override 
-    {
-        std::cout << "draw shape: Rectangle" << std::endl;
-    }
-};
-class ShapeFactory
-{
-public:
-    using FactoryMethod = std::function<std::unique_ptr<Shape>()>;
-    ShapeFactory() = default;
-    ~ShapeFactory() = default;
-    virtual std::unique_ptr<Shape> create() = 0;
-};
-class CircleFactory : public ShapeFactory
-{
-public:
-    CircleFactory() = default;
-    ~CircleFactory() = default;
-    std::unique_ptr<Shape> create() override
-    {
-        return std::make_unique<Circle>();
-    }
-};
-class TriangleFactory : public ShapeFactory
-{
-public:
-    TriangleFactory() = default;
-    ~TriangleFactory() = default;
-    std::unique_ptr<Shape> create() override
-    {
-        return std::make_unique<Triangle>();
-    }   
-};
-class RectangleFactory : public ShapeFactory
-{
-public:
-    RectangleFactory() = default;
-    ~RectangleFactory() = default;
-    std::unique_ptr<Shape> create() override
-    {
-        return std::make_unique<Rectangle>();
-    }   
-};
-class ShapeFactoryNew
-{
-public:
-    using FactoryMethod = std::function<std::unique_ptr<Shape>()>;
-    static ShapeFactoryNew& getInstance()
-    {
-        
-        return _instance;
-    }
-    void registerFactory(const std::string& name, FactoryMethod method)
-    {
-        _factoryMap[name] = method;
-    }
-    std::unique_ptr<Shape> create(const std::string& name)
-    {
-        if(_factoryMap.find(name) != _factoryMap.end())
-        {
-            return _factoryMap[name]();
-        }
-        std::cerr << "not exsit name: " << name << std::endl;
-        exit(-1);
-        return nullptr;
+    void draw() override {
+        cout << "draw a shape : " << _name <<endl;
     }
 private:
-    ShapeFactoryNew() = default;
-    ~ShapeFactoryNew() = default;
-    ShapeFactoryNew(const ShapeFactoryNew&) = delete;
-    ShapeFactoryNew& operator=(const ShapeFactoryNew&) = delete;
-    ShapeFactoryNew(ShapeFactoryNew&&) = delete;
-    ShapeFactoryNew& operator=(ShapeFactoryNew&&) = delete;
-    static ShapeFactoryNew _instance;
-    std::unordered_map<std::string, FactoryMethod> _factoryMap;
+    string _name = "Circle";
 };
-ShapeFactoryNew ShapeFactoryNew::_instance;
-void factory()
-{
-    std::unique_ptr<ShapeFactory> factory = std::make_unique<CircleFactory>();
-    std::unique_ptr<Shape> shape = factory->create();
-    shape->draw();
+class Triangle : public Shape {
+public:
+    void draw() override {
+        cout << "draw a shape : " << _name <<endl;
+    }
+private:
+    string _name = "Triangle";
+};
+class Rectangle : public Shape {
+public:
+    void draw() override {
+        cout << "draw a shape : " << _name <<endl;
+    }
+private:
+    string _name = "Rectangle";
+};
+class ShapeFactory {
+public:
+    using FactoryMethod = function<unique_ptr<Shape>()>;
+    static ShapeFactory& getInstance() {
+        static ShapeFactory instance;
+        return instance;
+    }
+    void registerFactory(const string& name , FactoryMethod method) {
+        cout << "_factoryMap register : " << name << endl;
+        _factoryMap[name] = method;
+    }
+    void unregisterFactory(const string& name) {
+        auto it =_factoryMap.find(name);
+        if (it != _factoryMap.end())
+        {
+            _factoryMap.erase(it);
+            cout << "_factoryMap unregister : " << name << endl;
+        }
+    }
+    unique_ptr<Shape> ceate(const std::string& name) {
+        auto it =_factoryMap.find(name);
+        if (it == _factoryMap.end())
+            throw invalid_argument("factory no registered type: " + name);
+        return it->second();
+    }
+private:
+    ShapeFactory() = default;
+    ~ShapeFactory() = default;
+    ShapeFactory(const ShapeFactory&) = delete;
+    ShapeFactory& operator=(const ShapeFactory&) = delete;
+    ShapeFactory(ShapeFactory&&) = delete;
+    ShapeFactory& operator=(ShapeFactory&&) = delete;
+    unordered_map<string, FactoryMethod> _factoryMap;
+};
 
-    factory = std::make_unique<TriangleFactory>();
-    shape = factory->create();
-    shape->draw();
 
-    factory = std::make_unique<RectangleFactory>();
-    shape = factory->create();
-    shape->draw();
+
+void factory() {
+    auto& instance = ShapeFactory::getInstance();
+    instance.registerFactory("Circle", [](){return make_unique<Circle>();});
+    instance.registerFactory("Triangle", [](){return make_unique<Triangle>();});
+    instance.registerFactory("Rectangle", [](){return make_unique<Rectangle>();});
+    instance.ceate("Circle")->draw();
+    instance.ceate("Triangle")->draw();
+    instance.ceate("Rectangle")->draw();
+    instance.unregisterFactory("Circle");
+    instance.ceate("Circle")->draw();
 }
-void registerFactories()
-{
-    ShapeFactoryNew::getInstance().registerFactory("Circle", [](){return std::make_unique<Circle>();});
-    ShapeFactoryNew::getInstance().registerFactory("Triangle", [](){return std::make_unique<Triangle>();});
-    ShapeFactoryNew::getInstance().registerFactory("Rectangle", [](){return std::make_unique<Rectangle>();});
-}
-void factoryNew()
-{
-    registerFactories();
-    auto& factory = ShapeFactoryNew::getInstance();
-    std::unique_ptr<Shape> shape;
-    shape = factory.create("Circle");
-    shape->draw();
-    shape = factory.create("Triangle");
-    shape->draw();
-    shape = factory.create("Rectangle");
-    shape->draw();
-}
-#endif // _FACTORY_HPP_
+#endif /*_FACTORY_HPP_*/
