@@ -4,90 +4,82 @@
 #include <iostream>
 #include <string>
 #include <memory>
-class Coffee
-{
+using namespace std;
+class Coffee {
 public:
-    Coffee() = default;
-    virtual ~Coffee() = default; 
-    virtual const std::string description() const = 0;
-    virtual const double cost() const = 0;
+    Coffee() = default;  
+    virtual ~Coffee() = default;
+    virtual string describe() const = 0;
+    virtual double cost() const = 0;
+private:
+    string _name = "none";
+    double _price = 0;
 };
-class Latte : public Coffee
-{
-public:
-    Latte() = default;
-    ~Latte() = default;
-    const std::string description() const override
-    {
-        return "Latte";
+class Latte : public Coffee {
+    string describe() const override {
+        return _name;
     }
-    const double cost() const override
-    {
-        return 20;
+    double cost() const override {
+        return _price;
     }
+private:
+    string _name = "Latte";
+    double _price = 15;
 };
-class Espresso : public Coffee
-{
-public:
-    Espresso() = default;
-    ~Espresso() = default;
-    const std::string description() const override
-    {
-        return "Espresso";
+class Espresso : public Coffee {
+    string describe() const override {
+        return _name;
     }
-    const double cost() const override
-    {
-        return 15;
+    double cost() const override {
+        return _price;
     }
+private:
+    string _name = "Espresso";
+    double _price = 20;
 };
-class CondimentDecorator : public Coffee
-{
+class CondimentDecorator : public Coffee {
 public:
-    CondimentDecorator(std::unique_ptr<Coffee> coffee) : _coffee(std::move(coffee)) {}
-    ~CondimentDecorator() = default;
-    const std::string description() const override
-    {
-        return _coffee->description();
+    explicit CondimentDecorator(unique_ptr<Coffee> coffee) : _coffee(move(coffee)) {}
+    string describe() const override {
+        return _coffee->describe();
     }
-    const double cost() const override
-    {
+    double cost() const override {
         return _coffee->cost();
     }
-protected:  
-    std::unique_ptr<Coffee> _coffee;
+protected:
+    unique_ptr<Coffee> _coffee;
 };
-class Milk : public CondimentDecorator
-{   
+class Milk : public CondimentDecorator {
 public:
-    Milk(std::unique_ptr<Coffee> coffee) : CondimentDecorator(std::move(coffee)) {}
-    ~Milk() = default;
-    const std::string description() const override
-    {
-        return _coffee->description() + " + Milk";
+    using CondimentDecorator::CondimentDecorator;
+    string describe() const override {
+        return CondimentDecorator::describe() + " + " + _name;
     }
-    const double cost() const override
-    {
-        return _coffee->cost() + 5;
+    double cost() const override {
+        return CondimentDecorator::cost() + _price;
     }
+private:
+    string _name = "Milk";
+    double _price = 5;
 };
-class Sugar : public CondimentDecorator
-{
+class Sugar : public CondimentDecorator {
 public:
-    Sugar(std::unique_ptr<Coffee> coffee) : CondimentDecorator(std::move(coffee)) {}
-    ~Sugar() = default;
-    const std::string description() const override
-    {
-        return _coffee->description() + " + Sugar";
+    using CondimentDecorator::CondimentDecorator;
+    string describe() const override {
+        return CondimentDecorator::describe() + " + " + _name;
     }
-    const double cost() const override
-    {
-        return _coffee->cost() + 2;
+    double cost() const override {
+        return CondimentDecorator::cost() + _price;
     }
+private:
+    string _name = "Sugar";
+    double _price = 2;
 };
-void decorator()
-{
-    auto coffeeWithMilkAndSugar = std::make_unique<Sugar>(std::make_unique<Milk>(std::make_unique<Latte>()));
-    std::cout << coffeeWithMilkAndSugar->description() << " : " << coffeeWithMilkAndSugar->cost() << std::endl;
-}
+void decorator() {
+    auto latteMilkSugar = make_unique<Sugar>(make_unique<Milk>(make_unique<Latte>()));
+    cout << latteMilkSugar->describe() << " cost " << latteMilkSugar->cost() << endl;
 
+    auto espressoMilkSugar = make_unique<Sugar>(make_unique<Milk>(make_unique<Espresso>()));
+    cout << espressoMilkSugar->describe() << " cost " << espressoMilkSugar->cost() << endl;
+}
 #endif /*_DECORATOR_HPP_*/
